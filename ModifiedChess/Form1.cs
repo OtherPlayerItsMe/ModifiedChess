@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -18,6 +18,7 @@ namespace ModifiedChess
         public int currPlayer;
         public bool isMoving = false;
         public int[,] map = new int[16, 16];
+        public int isLifeKIng = 0;
         public Form1()
         {
             InitializeComponent();
@@ -59,8 +60,8 @@ namespace ModifiedChess
 
         public void CreateMap()
         {
-            for (int i = 0; i < 16; i++)
-            {
+            for (int i = 0; i < 16; i ++)
+            { 
                 for (int j = 0; j < 16; j++)
                 {
                     buttons[i, j] = new Button();
@@ -71,12 +72,12 @@ namespace ModifiedChess
                         Location = new Point(j * 50, i * 50)
                     };
 
-                    switch (map[i, j] / 10)
+                    switch (map[i,j] / 10)
                     {
                         case 1:
                             Image part = new Bitmap(50, 50);
                             Graphics graphic = Graphics.FromImage(part);
-                            graphic.DrawImage(chessSprite, new Rectangle(0, 0, 50, 50), 0 + 150 * (map[i, j] % 10 - 1), 0, 150, 150, GraphicsUnit.Pixel);
+                            graphic.DrawImage(chessSprite, new Rectangle(0, 0, 50, 50), 0 + 150 * (map[i,j]%10 -1) , 0, 150, 150, GraphicsUnit.Pixel);
                             newButton.BackgroundImage = part;
                             break;
                         case 2:
@@ -85,7 +86,7 @@ namespace ModifiedChess
                             graphic1.DrawImage(chessSprite, new Rectangle(0, 0, 50, 50), 0 + 150 * (map[i, j] % 10 - 1), 150, 150, 150, GraphicsUnit.Pixel);
                             newButton.BackgroundImage = part1;
                             break;
-                        case 3:
+                        case 3: 
                             if (map[i, j] % 10 == 1)
                             {
                                 Image part2 = new Bitmap(50, 50);
@@ -108,7 +109,7 @@ namespace ModifiedChess
                     newButton.Click += new EventHandler(OnFigurePress);
                     this.Controls.Add(newButton);
                     buttons[i, j] = newButton;
-
+                    
                 }
             }
         }
@@ -155,6 +156,7 @@ namespace ModifiedChess
                 }
             }
             prevButton = pressedButton;
+            
         }
 
         public void SwitchPlayer()
@@ -162,8 +164,9 @@ namespace ModifiedChess
             if (currPlayer == 1)
                 currPlayer = 2;
             else currPlayer = 1;
+            
         }
-        
+
         public void ShowSteps(int IcurrFigure, int JcurrFigure, int currFigure)
         {
             int dir = currPlayer == 1 ? 1 : -1;
@@ -236,6 +239,8 @@ namespace ModifiedChess
                 {
                     buttons[IcurrFigure + 1 * dir, JcurrFigure + dir2].BackColor = Color.Yellow;
                     buttons[IcurrFigure + 1 * dir, JcurrFigure + dir2].Enabled = true;
+                    if (map[IcurrFigure + 1 * dir, JcurrFigure + 1] / 10 != currPlayer && map[IcurrFigure + 1 * dir, JcurrFigure + 1] % 10 == 3)
+                        Restart();
                 }
             }
         }
@@ -257,14 +262,11 @@ namespace ModifiedChess
         private void CanJump(int IcurrFigure, int JcurrFigure, int one, int two)
         {
             if (InsideBorder(IcurrFigure + one, JcurrFigure + two))
+            {
+                if (map[IcurrFigure + one, JcurrFigure + two] % 10 == 3 && map[IcurrFigure + one, JcurrFigure + two] % 10 == currPlayer)
+                    Restart();
                 DeterminePath(IcurrFigure + one, JcurrFigure + two);
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            this.Controls.Clear();
-            this.Controls.Add(button1);
-            Initalization();
+            }
         }
 
         public bool InsideBorder(int ti, int tj)
@@ -295,7 +297,7 @@ namespace ModifiedChess
                     if (!DeterminePath(i, j))
                         break;
                 }
-                if (j < 15)//7
+                if (j < 15)
                     j++;
                 else break;
 
@@ -407,6 +409,8 @@ namespace ModifiedChess
             {
                 if (map[IcurrFigure, j] / 10 != currPlayer && map[IcurrFigure, j] / 10 != 3)
                 {
+                    if (map[IcurrFigure, j] % 10 == 3)
+                        Restart();
                     buttons[IcurrFigure, j].BackColor = Color.Yellow;
                     buttons[IcurrFigure, j].Enabled = true;
                 }
@@ -417,6 +421,7 @@ namespace ModifiedChess
 
         public new void Activate()
         {
+
             for (int i = 0; i < 16; i++)
                 for (int j = 0; j < 16; j++)
                 {
@@ -431,6 +436,19 @@ namespace ModifiedChess
                 {
                     buttons[i, j].Enabled = false;
                 }
+        }
+
+        private void Restart()
+        {
+            this.Controls.Clear();
+            this.Controls.Add(button1);
+            Initalization();
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.Controls.Clear();
+            this.Controls.Add(button1);
+            Initalization();
         }
     }
 }
