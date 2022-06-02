@@ -237,10 +237,13 @@ namespace ModifiedChess
             {
                 if (map[IcurrFigure + 1 * dir, JcurrFigure + 1] != 0 && map[IcurrFigure + 1 * dir, JcurrFigure + 1] / 10 != currPlayer && map[IcurrFigure + 1 * dir, JcurrFigure + 1] / 10 != 3)
                 {
-                    buttons[IcurrFigure + 1 * dir, JcurrFigure + dir2].BackColor = Color.Yellow;
-                    buttons[IcurrFigure + 1 * dir, JcurrFigure + dir2].Enabled = true;
                     if (map[IcurrFigure + 1 * dir, JcurrFigure + 1] / 10 != currPlayer && map[IcurrFigure + 1 * dir, JcurrFigure + 1] % 10 == 3)
                         Restart();
+                    else
+                    {
+                        buttons[IcurrFigure + 1 * dir, JcurrFigure + dir2].BackColor = Color.Yellow;
+                        buttons[IcurrFigure + 1 * dir, JcurrFigure + dir2].Enabled = true;
+                    }
                 }
             }
         }
@@ -263,8 +266,6 @@ namespace ModifiedChess
         {
             if (InsideBorder(IcurrFigure + one, JcurrFigure + two))
             {
-                if (map[IcurrFigure + one, JcurrFigure + two] % 10 == 3 && map[IcurrFigure + one, JcurrFigure + two] % 10 == currPlayer)
-                    Restart();
                 DeterminePath(IcurrFigure + one, JcurrFigure + two);
             }
         }
@@ -411,8 +412,11 @@ namespace ModifiedChess
                 {
                     if (map[IcurrFigure, j] % 10 == 3)
                         Restart();
-                    buttons[IcurrFigure, j].BackColor = Color.Yellow;
-                    buttons[IcurrFigure, j].Enabled = true;
+                    else
+                    {
+                        buttons[IcurrFigure, j].BackColor = Color.Yellow;
+                        buttons[IcurrFigure, j].Enabled = true;
+                    }
                 }
                 return false;
             }
